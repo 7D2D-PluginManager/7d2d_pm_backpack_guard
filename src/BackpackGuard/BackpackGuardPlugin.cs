@@ -19,6 +19,7 @@ public class BackpackGuardPlugin : BasePlugin
         "Protects dropped player backpacks from being looted by others for a limited time";
 
     private IGameUtil _gameUtil;
+    private IGamePrefsUtil _gamePrefsUtil;
     private IPlayerUtil _playerUtil;
     private IContainerUtil _containerUtil;
     private IPlayerLocalization _localization;
@@ -27,6 +28,7 @@ public class BackpackGuardPlugin : BasePlugin
     protected override void OnLoad()
     {
         _gameUtil = Capabilities.Get<IGameUtil>();
+        _gamePrefsUtil = Capabilities.Get<IGamePrefsUtil>();
         _playerUtil = Capabilities.Get<IPlayerUtil>();
         _containerUtil = Capabilities.Get<IContainerUtil>();
         _localization = GetPlayerLocalization();
@@ -60,7 +62,7 @@ public class BackpackGuardPlugin : BasePlugin
 
     private bool IsExpired(int droppedWorldMinutes)
     {
-        var dayNightLength = _gameUtil.GetDayNightLength();
+        var dayNightLength = _gamePrefsUtil.GetInt(GamePrefs.DayNightLength);
         if (dayNightLength <= 0) dayNightLength = 60;
 
         var thresholdGameMinutes = _config.ProtectionMinutes * 1440.0 / dayNightLength;
